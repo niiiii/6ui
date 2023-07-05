@@ -23,14 +23,7 @@ else
 fi
 echo "The OS release is: $release"
 
-arch3xui() {
-    case "$(uname -m)" in
-    x86_64 | x64 | amd64) echo 'amd64' ;;
-    armv8 | arm64 | aarch64) echo 'arm64' ;;
-    *) echo -e "${green}Unsupported CPU architecture! ${plain}" && rm -f install.sh && exit 1 ;;
-    esac
-}
-echo "arch: $(arch3xui)"
+
 
 os_version=""
 os_version=$(grep -i version_id /etc/os-release | cut -d \" -f2 | cut -d . -f1)
@@ -114,16 +107,16 @@ install_x-ui() {
             exit 1
         fi
         echo -e "Got x-ui latest version: ${last_version}, beginning the installation..."
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-$(arch3xui).tar.gz https://github.com/niiiii/6ui/releases/download/${last_version}/x-ui-linux-$(arch3xui).tar.gz
+        wget -N --no-check-certificate -O /usr/local/x-ui-linux-.tar.gz https://api.github.com/repos/niiiii/6ui/tarball/v1.7.0
         if [[ $? -ne 0 ]]; then
             echo -e "${red}Downloading x-ui failed, please be sure that your server can access Github ${plain}"
             exit 1
         fi
     else
         last_version=$1
-        url="https://github.com/niiiii/6ui/releases/download/${last_version}/x-ui-linux-$(arch3xui).tar.gz"
+        url="https://github.com/niiiii/6ui/releases/download/${last_version}/x-ui-linux.tar.gz"
         echo -e "Begining to install x-ui $1"
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-$(arch3xui).tar.gz ${url}
+        wget -N --no-check-certificate -O /usr/local/x-ui-linux-.tar.gz ${url}
         if [[ $? -ne 0 ]]; then
             echo -e "${red}Download x-ui $1 failed,please check the version exists ${plain}"
             exit 1
@@ -134,10 +127,10 @@ install_x-ui() {
         rm /usr/local/x-ui/ -rf
     fi
 
-    tar zxvf x-ui-linux-$(arch3xui).tar.gz
-    rm x-ui-linux-$(arch3xui).tar.gz -f
+    tar zxvf x-ui-linux-.tar.gz
+    rm x-ui-linux-.tar.gz -f
     cd x-ui
-    chmod +x x-ui bin/xray-linux-$(arch3xui)
+    chmod +x x-ui bin/xray-linux-
     cp -f x-ui.service /etc/systemd/system/
     wget --no-check-certificate -O /usr/bin/x-ui https://raw.githubusercontent.com/niiiii/6ui/main/x-ui.sh
     chmod +x /usr/local/x-ui/x-ui.sh
